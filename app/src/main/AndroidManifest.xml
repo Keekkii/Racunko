@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Racunko"
         tools:targetApi="31">
+
         <activity
             android:name=".LoginActivity"
             android:exported="true"
@@ -23,12 +24,17 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity is still available, but not the launcher -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Racunko" />
-    </application>
 
+        <activity
+            android:name=".HeroSectionActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Racunko" />
+
+    </application>
 </manifest>
