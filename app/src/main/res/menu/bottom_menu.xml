@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:title="Home"
+        android:icon="@drawable/home_24dp_ffffff"/>
+    <item
+        android:id="@+id/shorts"
+        android:title="Shorts"
+        android:icon="@drawable/whatshot_24dp_ffffff"/>
+    <item
+        android:title=""/>
+    <item
+        android:id="@+id/subscriptions"
+        android:title="Subscriptions"
+        android:icon="@drawable/subscriptions_24dp_ffffff"/>
+    <item
+        android:id="@+id/library"
+        android:title="Library"
+        android:icon="@drawable/video_library_24dp_ffffff"/>
+</menu>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:text="Prijava"
-        android:textColor="@color/lavander"
+        android:textColor="@color/lavender"
         android:textSize="28sp"
         android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/lavander"
+        android:backgroundTint="@color/lavender"
         android:padding="12dp"
         android:text="Prijavi se"
         android:textColor="@android:color/white"

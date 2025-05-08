@@ -8,6 +8,6 @@ public class HeroSectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome_page); // This inflates your welcome_page.xml layout
+        setContentView(R.layout.activity_main); // This inflates your welcome_page.xml layout
     }
 }
