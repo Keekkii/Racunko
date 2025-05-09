@@ -12,26 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Racunko"
         tools:targetApi="31">
-
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.Racunko">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".HeroSectionActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Racunko" />
-
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
-        </activity>
-
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"></activity>
     </application>
+
 </manifest>
