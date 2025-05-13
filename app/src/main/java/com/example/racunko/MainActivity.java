@@ -110,29 +110,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Show the bottom action dialog
+    // Show the bottom action dialog
     private void showBottomDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottomsheetstyle);
 
-        LinearLayout videoLayout = dialog.findViewById(R.id.layoutVideo);
-        LinearLayout shortsLayout = dialog.findViewById(R.id.layoutShorts);
-        LinearLayout liveLayout = dialog.findViewById(R.id.layoutLive);
+        LinearLayout expenseLayout = dialog.findViewById(R.id.layoutVideo);
+        LinearLayout incomeLayout = dialog.findViewById(R.id.layoutShorts);
+        LinearLayout budgetLayout = dialog.findViewById(R.id.layoutLive);
         ImageView cancelButton = dialog.findViewById(R.id.cancelButton);
 
-        videoLayout.setOnClickListener(v -> {
+        // Update text for these layouts (you might want to modify the bottomsheetstyle.xml too)
+        // For now, we're reusing existing layouts but changing their functionality
+
+        expenseLayout.setOnClickListener(v -> {
             dialog.dismiss();
-            Toast.makeText(MainActivity.this, "Upload a Video is clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Add Expense clicked", Toast.LENGTH_SHORT).show();
+            // You would show an expense entry dialog here
         });
 
-        shortsLayout.setOnClickListener(v -> {
+        incomeLayout.setOnClickListener(v -> {
             dialog.dismiss();
-            Toast.makeText(MainActivity.this, "Create a short is clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Add Income clicked", Toast.LENGTH_SHORT).show();
+            // You would show an income entry dialog here
         });
 
-        liveLayout.setOnClickListener(v -> {
+        budgetLayout.setOnClickListener(v -> {
             dialog.dismiss();
-            Toast.makeText(MainActivity.this, "Go live is clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Set Budget clicked", Toast.LENGTH_SHORT).show();
+            // You would show a budget setting dialog here
         });
 
         cancelButton.setOnClickListener(view -> dialog.dismiss());
@@ -146,4 +153,5 @@ public class MainActivity extends AppCompatActivity {
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
+
 }
