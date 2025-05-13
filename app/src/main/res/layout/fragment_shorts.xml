@@ -12,6 +12,6 @@
         android:text="Transactions"
         android:gravity="center"
         android:textSize="30sp"
-        android:textColor="@color/lavender" />
+        android:textColor="@color/Main" />
 
 </FrameLayout>

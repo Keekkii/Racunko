@@ -3,17 +3,20 @@
     <item
         android:id="@+id/home"
         android:title="Dashboard"
-        android:icon="@drawable/baseline_add_24" />
+        android:icon="@drawable/dashboard_reference_svgrepo_com" />
     <item
         android:id="@+id/shorts"
         android:title="Transactions"
-        android:icon="@drawable/baseline_add_24" />
+        android:icon="@drawable/money_svgrepo_com__1_"
+        />
     <item
         android:id="@+id/subscriptions"
         android:title="Budget"
-        android:icon="@drawable/baseline_add_24" />
+        android:icon="@drawable/money_manager_svgrepo_com"
+    />
     <item
         android:id="@+id/library"
         android:title="Reports"
-        android:icon="@drawable/baseline_add_24" />
+        android:icon="@drawable/analitics_chart_data_svgrepo_com"
+        />
 </menu>

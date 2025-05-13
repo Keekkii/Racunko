@@ -40,7 +40,7 @@
                     android:layout_marginTop="4dp"
                     android:text="$0"
                     android:textSize="24sp"
-                    android:textColor="@color/lavender"
+                    android:textColor="@color/Main"
                     android:textStyle="bold" />
 
                 <TextView
@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="@color/lavender"
+                    android:backgroundTint="@color/Main"
                     android:text="Set Budget" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -153,7 +153,7 @@
             android:id="@+id/btn_view_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/lavender"
+            android:backgroundTint="@color/Main"
             android:text="View All Transactions" />
 
     </LinearLayout>

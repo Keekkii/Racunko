@@ -4,11 +4,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -40,6 +42,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set the status bar color to black for devices with a punch-hole camera
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+            // Setting status bar color to black
+            window.setStatusBarColor(Color.BLACK);
+
+            // Set the navigation bar color to black (optional)
+            window.setNavigationBarColor(Color.BLACK);
+
+            // Set the system UI flags to adjust for punch-hole cameras and full-screen UI
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);  // Light status bar (useful for dark backgrounds)
+            }
+        }
+
         // Initialize views
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
@@ -56,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 R.string.open_nav, R.string.close_nav
         );
         drawerLayout.addDrawerListener(toggle);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(android.R.color.white));
         toggle.syncState();
 
         // Set up the drawer's navigation item listener
@@ -110,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Show the bottom action dialog
-    // Show the bottom action dialog
     private void showBottomDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -121,25 +143,19 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout budgetLayout = dialog.findViewById(R.id.layoutLive);
         ImageView cancelButton = dialog.findViewById(R.id.cancelButton);
 
-        // Update text for these layouts (you might want to modify the bottomsheetstyle.xml too)
-        // For now, we're reusing existing layouts but changing their functionality
-
         expenseLayout.setOnClickListener(v -> {
             dialog.dismiss();
             Toast.makeText(MainActivity.this, "Add Expense clicked", Toast.LENGTH_SHORT).show();
-            // You would show an expense entry dialog here
         });
 
         incomeLayout.setOnClickListener(v -> {
             dialog.dismiss();
             Toast.makeText(MainActivity.this, "Add Income clicked", Toast.LENGTH_SHORT).show();
-            // You would show an income entry dialog here
         });
 
         budgetLayout.setOnClickListener(v -> {
             dialog.dismiss();
             Toast.makeText(MainActivity.this, "Set Budget clicked", Toast.LENGTH_SHORT).show();
-            // You would show a budget setting dialog here
         });
 
         cancelButton.setOnClickListener(view -> dialog.dismiss());
@@ -153,5 +169,4 @@ public class MainActivity extends AppCompatActivity {
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
-
 }

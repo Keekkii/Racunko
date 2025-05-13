@@ -26,7 +26,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/Main"
                 app:titleTextColor="@android:color/white"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -46,8 +46,8 @@
             android:layout_gravity="start"
             app:headerLayout="@layout/nav_header"
             app:menu="@menu/nav_menu"
-            app:itemIconTint="@color/lavender"
-            app:itemTextColor="@color/lavender"/>
+            app:itemIconTint="@color/Main"
+            app:itemTextColor="@color/Main"/>
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <!-- BottomAppBar -->
@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@color/White"
         app:fabCradleMargin="10dp"
         app:fabCradleRoundedCornerRadius="50dp">
 
@@ -67,8 +67,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:background="@android:color/transparent"
+            app:itemIconTint="@color/Main"
+            app:itemTextColor="@color/Main"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_menu" />
+
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <!-- Floating Action Button -->
@@ -76,10 +79,14 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/White"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="0dp"
+        app:rippleColor="@android:color/transparent"
+        android:stateListAnimator="@null"
         android:src="@drawable/baseline_add_24"
         app:layout_anchor="@id/bottomAppBar"
         app:maxImageSize="40dp"
-        app:tint="@color/lavender"
+        app:tint="@color/Main"
         android:contentDescription=""/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

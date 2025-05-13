@@ -32,6 +32,9 @@ public class SettingsActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        // Set the color of the hamburger icon to white
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(android.R.color.white));
+
         // Set up the navigation item listener for drawer
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int id = menuItem.getItemId();
