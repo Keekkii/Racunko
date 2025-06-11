@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:title="Dashboard"
+        android:icon="@drawable/dashboard_reference_svgrepo_com" />
+    <item
+        android:id="@+id/shorts"
+        android:title="Transactions"
+        android:icon="@drawable/money_svgrepo_com__1_"
+        />
+    <item
+        android:id="@+id/subscriptions"
+        android:title="Budget"
+        android:icon="@drawable/money_manager_svgrepo_com"
+    />
+    <item
+        android:id="@+id/library"
+        android:title="Reports"
+        android:icon="@drawable/analitics_chart_data_svgrepo_com"
+        />
+</menu>

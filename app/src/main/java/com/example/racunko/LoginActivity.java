@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (username.equals("admin") && password.equals("admin123")) {
                     // Login successful, open HeroSectionActivity
-                    Intent intent = new Intent(LoginActivity.this, HeroSectionActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish(); // Optional: close LoginActivity
                 } else {
