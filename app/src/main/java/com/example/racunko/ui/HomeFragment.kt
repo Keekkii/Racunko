@@ -14,6 +14,7 @@ import com.example.racunko.R
 import com.example.racunko.adapter.TransactionAdapter
 import com.example.racunko.model.Transaction
 import android.content.Context.MODE_PRIVATE
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -21,6 +22,10 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.lifecycle.ViewModelProvider
+import android.widget.RadioGroup
+import android.widget.Spinner
+
 
 class HomeFragment : Fragment() {
 
@@ -32,19 +37,63 @@ class HomeFragment : Fragment() {
     private lateinit var tvExpenses: TextView
     private lateinit var rvTransactions: RecyclerView
     private lateinit var btnViewAll: Button
-
-    // Sample data (in a real app, you'd use Room database)
-    private val transactions = mutableListOf<Transaction>(
-        Transaction(1, 45.75, "Grocery Shopping", "Food", true, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse("2025-05-10")!!),
-        Transaction(2, 120.00, "Electricity Bill", "Utilities", true, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse("2025-05-05")!!),
-        Transaction(3, 1000.00, "Salary", "Income", false, SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse("2025-05-01")!!)
-    )
+    private lateinit var viewModel: TransactionViewModel
+    private lateinit var btnAddTransaction: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    private fun showAddTransactionDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.transaction_input_dialog, null)
+
+        val etAmount = dialogView.findViewById<EditText>(R.id.et_amount)
+        val etDescription = dialogView.findViewById<EditText>(R.id.et_description)
+        val spinnerCategory = dialogView.findViewById<Spinner>(R.id.spinner_category)
+        val rgType = dialogView.findViewById<RadioGroup>(R.id.rg_type)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btn_confirm)
+
+        // Set up category spinner
+        val categories = resources.getStringArray(R.array.categories_array)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategory.adapter = adapter
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        btnConfirm.setOnClickListener {
+            val amountText = etAmount.text.toString()
+            val description = etDescription.text.toString()
+            val category = spinnerCategory.selectedItem.toString()
+            val isExpense = rgType.checkedRadioButtonId == R.id.rb_expense
+
+            if (amountText.isNotBlank() && description.isNotBlank()) {
+                val amount = amountText.toDoubleOrNull()
+                if (amount != null && amount > 0) {
+                    viewModel.insert(
+                        Transaction(
+                            amount = amount,
+                            description = description,
+                            category = category,
+                            isExpense = isExpense
+                        )
+                    )
+                    Toast.makeText(context, "Transaction Added", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(context, "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,17 +115,22 @@ class HomeFragment : Fragment() {
 
         // Set budget display
         tvBudgetAmount.text = "$${budget}"
-        updateBudgetProgress()
 
         // Set up RecyclerView
         rvTransactions.layoutManager = LinearLayoutManager(context)
-        rvTransactions.adapter = TransactionAdapter(transactions.take(3)) { transaction ->
-            // Handle transaction click
-            Toast.makeText(context, "Clicked: ${transaction.description}", Toast.LENGTH_SHORT).show()
+        viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
+
+        viewModel.transactions.observe(viewLifecycleOwner) { list ->
+            rvTransactions.adapter = TransactionAdapter(list.take(3)) { transaction ->
+                Toast.makeText(context, "Clicked: ${transaction.description}", Toast.LENGTH_SHORT).show()
+            }
+
+            updateBudgetProgress(list)
+            updateFinancialSummary(list)
         }
 
+
         // Update income and expense totals
-        updateFinancialSummary()
 
         // Set up buttons
         btnSetBudget.setOnClickListener {
@@ -87,6 +141,14 @@ class HomeFragment : Fragment() {
             // Navigate to transactions list fragment (implement later)
             Toast.makeText(context, "View all transactions", Toast.LENGTH_SHORT).show()
         }
+
+        btnAddTransaction = view.findViewById(R.id.btn_add_transaction)
+
+        btnAddTransaction.setOnClickListener {
+            showAddTransactionDialog()
+        }
+
+
     }
 
     private fun showSetBudgetDialog() {
@@ -106,7 +168,6 @@ class HomeFragment : Fragment() {
                 val newBudget = input.text.toString().toFloat()
                 prefs.edit().putFloat("budget", newBudget).apply()
                 tvBudgetAmount.text = "$$newBudget"
-                updateBudgetProgress()
                 Toast.makeText(context, "Budget updated", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT).show()
@@ -120,11 +181,10 @@ class HomeFragment : Fragment() {
         builder.show()
     }
 
-    private fun updateBudgetProgress() {
+    private fun updateBudgetProgress(transactions: List<Transaction>) {
         val prefs = requireActivity().getSharedPreferences("finance", MODE_PRIVATE)
         val budget = prefs.getFloat("budget", 0.0f)
 
-        // Calculate total expenses (only those marked as expenses)
         val totalExpenses = transactions
             .filter { it.isExpense }
             .sumOf { it.amount }
@@ -132,7 +192,6 @@ class HomeFragment : Fragment() {
         val remaining = budget - totalExpenses
         tvRemaining.text = "Remaining: $${remaining}"
 
-        // Update progress bar
         if (budget > 0) {
             val percentage = ((totalExpenses / budget) * 100).toInt()
             progressBudget.progress = percentage.coerceAtMost(100)
@@ -141,7 +200,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun updateFinancialSummary() {
+    private fun updateFinancialSummary(transactions: List<Transaction>) {
         val totalIncome = transactions
             .filter { !it.isExpense }
             .sumOf { it.amount }

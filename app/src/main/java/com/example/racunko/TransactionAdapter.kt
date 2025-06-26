@@ -36,22 +36,37 @@ class TransactionAdapter(
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         holder.date.text = dateFormat.format(transaction.date)
 
+        // Prefix and text color
         val prefix = if (transaction.isExpense) "-$" else "+$"
         holder.amount.text = "$prefix${transaction.amount}"
+
         holder.amount.setTextColor(
             holder.itemView.context.getColor(
                 if (transaction.isExpense) android.R.color.holo_red_dark
-                else android.R.color.holo_green_dark
+                else android.R.color.holo_green_dark // You can choose a darker green here if you want
             )
         )
 
-        // Set icon based on category (you can expand this)
-        // For now, using the default icon
+        // Set the correct icon (both will always stay white due to XML tint)
+        holder.categoryIcon.setImageResource(
+            if (transaction.isExpense) R.drawable.baseline_remove_24px
+            else R.drawable.baseline_add_24
+        )
+
+        // Set background tint (red or green)
+        holder.categoryIcon.background.setTint(
+            holder.itemView.context.getColor(
+                if (transaction.isExpense) android.R.color.holo_red_dark
+                else android.R.color.holo_green_dark // Feel free to use a darker green resource here
+            )
+        )
 
         holder.itemView.setOnClickListener {
             onItemClick(transaction)
         }
     }
+
+
 
     override fun getItemCount() = transactions.size
 }

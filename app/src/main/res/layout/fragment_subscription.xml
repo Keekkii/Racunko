@@ -1,17 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SubscriptionFragment">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Circular Progress Indicator -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/circular_progress_budget"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="24dp"
+        app:indicatorSize="200dp"
+        app:trackThickness="16dp"
+        app:indicatorInset="0dp"
+        app:trackColor="@android:color/darker_gray"
+        app:indicatorColor="@color/Main" />
+
+    <!-- Budget Status Message -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Budget"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:textColor="@color/Main" />
+        android:id="@+id/tv_budget_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="You're doing great!"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-</FrameLayout>
+    <!-- Budget Summary -->
+    <TextView
+        android:id="@+id/tv_budget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Monthly Budget: $0"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_expenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Total Expenses: $0"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Remaining: $0"
+        android:textSize="20sp" />
+
+    <!-- Old Horizontal Progress (Optional, can be removed if you want only circular) -->
+    <ProgressBar
+        android:id="@+id/progress_budget"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        android:progress="0" />
+
+    <!-- Budget Button -->
+    <Button
+        android:id="@+id/btn_set_budget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Set/Update Budget"
+        android:backgroundTint="@color/Main"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.graphics.Bitmap;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,8 +26,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.racunko.ui.HomeFragment;
-import com.example.racunko.ui.LibraryFragment;
+import com.example.racunko.ui.ReportsFragment;
 import com.example.racunko.ui.SubscriptionFragment;
+import com.example.racunko.ui.TransactionsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -36,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
     NavigationView navigationView;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,20 +120,33 @@ public class MainActivity extends AppCompatActivity {
                     replaceFragment(new HomeFragment());
                     break;
                 case R.id.shorts:
-                    replaceFragment(new HomeFragment()); // Replace with ShortsFragment if needed
+                    replaceFragment(new TransactionsFragment());
                     break;
                 case R.id.subscriptions:
                     replaceFragment(new SubscriptionFragment());
                     break;
                 case R.id.library:
-                    replaceFragment(new LibraryFragment());
+                    replaceFragment(new ReportsFragment());
                     break;
             }
             return true;
         });
 
         // Set up FAB dialog for actions
-        fab.setOnClickListener(view -> showBottomDialog());
+        fab.setOnClickListener(view -> openCamera());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            Toast.makeText(this, "Picture taken!", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     // Replace the current fragment

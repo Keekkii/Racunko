@@ -1,60 +1,143 @@
 package com.example.racunko.ui
 
+import android.app.AlertDialog
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.racunko.R
+import com.example.racunko.model.Transaction
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import android.animation.ObjectAnimator
+import android.view.animation.AnimationUtils
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SubscriptionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class SubscriptionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var tvBudget: TextView
+    private lateinit var tvExpenses: TextView
+    private lateinit var tvRemaining: TextView
+    private lateinit var progressBudget: ProgressBar
+    private lateinit var btnSetBudget: Button
+    private lateinit var viewModel: TransactionViewModel
+    private lateinit var circularProgressBudget: CircularProgressIndicator
+    private lateinit var tvBudgetStatus: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_subscription, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SubscriptionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SubscriptionFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        tvBudget = view.findViewById(R.id.tv_budget)
+        tvExpenses = view.findViewById(R.id.tv_expenses)
+        tvRemaining = view.findViewById(R.id.tv_remaining)
+        progressBudget = view.findViewById(R.id.progress_budget)
+        btnSetBudget = view.findViewById(R.id.btn_set_budget)
+        circularProgressBudget = view.findViewById(R.id.circular_progress_budget)
+        tvBudgetStatus = view.findViewById(R.id.tv_budget_status)
+
+        val prefs = requireActivity().getSharedPreferences("finance", MODE_PRIVATE)
+        val budget = prefs.getFloat("budget", 0.0f)
+        tvBudget.text = "Monthly Budget: $$budget"
+
+        viewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
+
+        viewModel.transactions.observe(viewLifecycleOwner) { transactions ->
+            updateBudgetProgress(transactions)
+        }
+
+        btnSetBudget.setOnClickListener {
+            showSetBudgetDialog()
+        }
+    }
+
+    private fun animateProgress(targetProgress: Int) {
+        val animator = ObjectAnimator.ofInt(circularProgressBudget, "progress", circularProgressBudget.progress, targetProgress)
+        animator.duration = 800 // Animation duration in ms
+        animator.start()
+    }
+
+
+    private fun updateBudgetProgress(transactions: List<Transaction>) {
+        val prefs = requireActivity().getSharedPreferences("finance", MODE_PRIVATE)
+        val budget = prefs.getFloat("budget", 0.0f)
+
+        val totalExpenses = transactions
+            .filter { it.isExpense }
+            .sumOf { it.amount }
+
+        val remaining = budget - totalExpenses
+
+        tvBudget.text = "Monthly Budget: $$budget"
+        tvExpenses.text = "Total Expenses: $$totalExpenses"
+        tvRemaining.text = "Remaining: $$remaining"
+
+        if (budget > 0) {
+            val percentage = ((totalExpenses / budget) * 100).toInt().coerceAtMost(100)
+            animateProgress(percentage)
+
+            // Color and status based on budget usage
+            when {
+                percentage < 80 -> {
+                    circularProgressBudget.setIndicatorColor(requireContext().getColor(android.R.color.holo_green_dark))
+                    tvBudgetStatus.text = "You're doing great! ✅"
+                    tvBudgetStatus.setTextColor(requireContext().getColor(android.R.color.holo_green_dark))
+                    tvRemaining.setTextColor(requireContext().getColor(android.R.color.holo_green_dark))
+                }
+                percentage in 80..99 -> {
+                    circularProgressBudget.setIndicatorColor(requireContext().getColor(android.R.color.holo_orange_dark))
+                    tvBudgetStatus.text = "Careful, almost there! ⚠️"
+                    tvBudgetStatus.setTextColor(requireContext().getColor(android.R.color.holo_orange_dark))
+                    tvRemaining.setTextColor(requireContext().getColor(android.R.color.holo_orange_dark))
+                }
+                else -> {
+                    circularProgressBudget.setIndicatorColor(requireContext().getColor(android.R.color.holo_red_dark))
+                    tvBudgetStatus.text = "Budget exceeded! 🔥"
+                    tvBudgetStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
+                    tvRemaining.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
                 }
             }
+
+        } else {
+            circularProgressBudget.progress = 0
+            tvBudgetStatus.text = "Set your budget to start tracking."
+        }
+    }
+
+
+    private fun showSetBudgetDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Set Monthly Budget")
+
+        val input = EditText(requireContext())
+        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        builder.setView(input)
+
+        builder.setPositiveButton("Save") { _, _ ->
+            try {
+                val newBudget = input.text.toString().toFloat()
+                val prefs = requireActivity().getSharedPreferences("finance", MODE_PRIVATE)
+                prefs.edit().putFloat("budget", newBudget).apply()
+                tvBudget.text = "Monthly Budget: $$newBudget"
+                Toast.makeText(context, "Budget updated", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 }

@@ -150,6 +150,13 @@
             tools:listitem="@layout/item_transaction" />
 
         <Button
+            android:id="@+id/btn_add_transaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/Main"
+            android:text="Add Transaction" />
+
+        <Button
             android:id="@+id/btn_view_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

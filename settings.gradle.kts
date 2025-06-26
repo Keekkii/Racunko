@@ -9,6 +9,10 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven(url = "https://jitpack.io")
+    }
+    plugins {
+        id("com.google.devtools.ksp") version "1.9.10-1.0.13"
     }
 }
 dependencyResolutionManagement {
@@ -16,6 +20,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://jitpack.io")
     }
 }
 

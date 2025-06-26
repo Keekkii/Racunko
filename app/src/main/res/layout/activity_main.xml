@@ -84,7 +84,7 @@
         app:strokeWidth="0dp"
         app:rippleColor="@android:color/transparent"
         android:stateListAnimator="@null"
-        android:src="@drawable/baseline_add_24"
+        android:src="@drawable/photo_camera_24px"
         app:layout_anchor="@id/bottomAppBar"
         app:maxImageSize="40dp"
         app:tint="@color/Main"
